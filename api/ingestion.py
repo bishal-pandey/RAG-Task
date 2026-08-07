@@ -1,12 +1,12 @@
 import uuid
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from pypdf import PdfReader
-from ingestionService import IngestionService
+from service.ingestionService import IngestionService
 
 router = APIRouter()
 
 ingestion_service = IngestionService(chunk_size=100, overlap=10)
-router.post("/ingest")
+@router.post("/ingest")
 async def ingest_document(strategy:str,file: UploadFile = File()):
 
     if file.filename.endswith(".pdf"):

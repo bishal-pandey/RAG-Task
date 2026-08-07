@@ -2,11 +2,12 @@ class Chunker:
     def __init__(self,chunk_size, overlap):
         self.token_chunk = TokenBasedChunker(chunk_size, overlap)
         self.fixed_length_chunk = FixedLengthChunker(chunk_size, overlap)
-    def chunking_method(self, strategy):
+        self.chunk_size = chunk_size
+    def chunking_method(self,document, strategy):
         if strategy=="TokenBased":
-            return self.token_chunk
+            return self.token_chunk.split_document(document)
         else:
-            return self.fixed_length_chunk
+            return self.fixed_length_chunk.split_document(document)
 
 
 class TokenBasedChunker:

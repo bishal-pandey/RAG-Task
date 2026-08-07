@@ -13,9 +13,7 @@ class IngestionService:
         self.db = Database()
 
     def process_document(self, filename, document_id, document, strategy):
-        chunks = self.chunker.split_document(document, strategy)
-        print(f"Document '{filename}' split into {len(chunks)} chunks.")
-        print(chunks)
+        chunks = self.chunker.chunking_method(document, strategy)
         embeddings = self.embedding_model.transform(chunks)
         print(f"Generated embeddings for {len(embeddings)} chunks.")
         for idx, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
@@ -52,3 +50,4 @@ class IngestionService:
         finally:
             db_session.close()
         
+ingest = IngestionService()

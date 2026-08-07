@@ -27,7 +27,7 @@ class LLM:
         - date
         - time
 
-        Return ONLY valid JSON.
+        Return ONLY valid JSON It should be able to execute Json.load(response).
 
         If the message is NOT an interview booking request,
         return null.
@@ -35,11 +35,15 @@ class LLM:
         {message}
 
         """
-        response = self.chat.send_message(prompt)
+        response = self.client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt,
+            config=types.GenerateContentConfig(response_mime_type="application/json"))
+        # response = self.chat.send_message(prompt)
         if response.text.strip().lower()=='null':
             return None
 
-        data = json.loads(response)
+        data = json.loads(response.text)
         booking_info = BookingInfo(
             Name=data.get("name"),
             Email=data.get("email"),
@@ -54,13 +58,16 @@ class LLM:
         except Exception as e:
             print(f"Error saving booking information: {e}")
         finally:
-                    db_session.close()
+                db_session.close()
+        return f"""Book interview 
+            Details: 
+            {data}"""
         
     def generate_prompt(self, history,message, document):
         context = "\n\n".join(document)
         prompt = f"""
         You are helpful assistant
-
+        This isnot Interview Booking
         Conversational History:
         {history}
 
@@ -69,16 +76,18 @@ class LLM:
 
         User Message:
         {message}
-
+        
         Response:
         """
         return prompt
 
     def conversation(self,message, history, document):
         booking = self.booking_tool(message)
-        if not booking:
+        if booking == None:
             prompt = self.generate_prompt(history, message, document)
             response = self.chat.send_message(prompt)
+            print(prompt)
+            print(response)
             return response.text
         else:
              return booking

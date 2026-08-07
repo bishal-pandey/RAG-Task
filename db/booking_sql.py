@@ -6,7 +6,7 @@ Base = declarative_base()
 
 
 class BookingDb:
-    def __init__(self, db_url: str = "sqlite:///booking.db"):
+    def __init__(self, db_url: str = "sqlite:///db/booking.db"):
         self.engine = create_engine(
             db_url,
             connect_args={"check_same_thread": False} 
@@ -31,6 +31,7 @@ class BookingInfo(Base):
     Name = Column(String, primary_key=True, index=True)
     Email = Column(String, nullable=False)
     Date = Column(DateTime, nullable=False)
+    Time = Column(DateTime, nullable = False)
 
 
 

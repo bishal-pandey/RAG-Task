@@ -6,7 +6,7 @@ Base = declarative_base()
 
 
 class Database:
-    def __init__(self, db_url: str = "sqlite:///documents.db"):
+    def __init__(self, db_url: str = "sqlite:///db/documents.db"):
         self.engine = create_engine(
             db_url,
             connect_args={"check_same_thread": False}  # Required for SQLite with FastAPI
